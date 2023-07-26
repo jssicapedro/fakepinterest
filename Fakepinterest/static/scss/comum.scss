@@ -1,0 +1,75 @@
+$output-style: expanded;
+
+@import './resets';
+@import './variables';
+
+@function weight($weight-name){
+    @return map-get($font-weights, $weight-name );
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 10px 25px;
+    & ul {
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        & a{
+            color: $primary-color;
+        }
+    }
+}
+
+main {
+    width: 90vw;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    gap: 5px;
+    & label {
+        font-weight: weight(bold);
+    }
+    & input{
+        margin-bottom: 10px;
+    }
+    & input[type="submit"]{
+        margin: 0 auto;
+        padding: 5px 0;
+        width: 50%;
+        margin-top: 15px;
+        border-radius: 5px;
+        background-color: $accent-color;
+        border: none;
+        font-weight: weight(medium);
+    }
+}
+
+footer {
+    height: 10vh;
+    margin-top: 25px;
+    background: $primary-color;
+    color: $text-color;
+    & p{
+        text-align: center;
+    }
+}
