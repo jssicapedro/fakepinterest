@@ -162,4 +162,54 @@ para isso dizemos á rota que tem de permitir os metodos POST
 </pre>
 
 <h2>Página criar conta</h2>
-A página criar conta é parecida com a página de login, tem de se informar que categoria de methods ela vai receber
+A página criar conta é parecida com a página de login, tem de se informar que categoria de methods e que formulário vai receber.
+<pre>
+    @app.route("/singup", methods=["GET", "POST"])
+    def singup():
+        formSingUp = FormSingUp()
+        return render_template("singup.html", form=formSingUp)
+</pre>
+
+<h2>Funcionalidades</h2>
+<h3>Criar um novo utilizador</h3>
+<pre>
+    <span style="color: gray;">from flask import render_template, url_for,</span> redirect
+    <span style="color: gray;">from Fakepinterest import app</span>, database, bcrypt
+    from Fakepinterest.models import User, Post
+    <span style="color: gray;">from flask_login import login_required</span>, login_user, logout_user
+    <span style="color: gray;">@app.route("/singup", methods=["GET", "POST"])
+    def singup():
+    form_SingUp = FormSingUp()</span>
+    if form_SingUp.validate_on_submit(): <span style="color: #84b6f4;"> # se todos os dados forem validos ao submeter </span><br>
+        password = bcrypt.generate_password_hash(form_SingUp.password.data) <span style="color: #84b6f4;"># a password recebida vai ser encriptada </span><br>
+        user = User( <span style="color: #84b6f4;"># a variavel user vai receber </span><br>
+            name=form_SingUp.name.data, <span style="color: #84b6f4;"># o nome recebido </span><br>
+            email=form_SingUp.email.data, <span style="color: #84b6f4;"> # o email recebido </span><br>
+            password=password <span style="color: #84b6f4;"> # a password encriptada </span><br>
+        )
+        database.session.add(user) <span style="color: #84b6f4;"> # abre uma coneção com a BD, adiciona o novo utilizador  </span>
+        database.session.commit() <span style="color: #84b6f4;"> # manda esse novo utilizador à BD </span>
+        login_user(user, remember=True) <span style="color: #84b6f4;"> # executa automaticamente o novo utilizador e caso ele feche a janela do site continuará logado
+        return redirect(url_for("userpage", user=user.name)) <span style="color: #84b6f4;"> # redireciona para a página de utilizador </span>
+    <span style="color: gray;">return render_template("singup.html", form=form_SingUp)</span>
+</pre>
+<h3>Login</h3>
+<pre>
+    <span style="color: gray;">@app.route("/", methods=["GET", "POST"])
+    def homepage():
+    formlogin = FormLogin()</span>
+    if formlogin.validate_on_submit(): <span style="color: #84b6f4;"># se todos os dados forem validos ao submeter</span>
+        user = User.query.filter_by(email=formlogin.email.data).first() <span style="color: #84b6f4;">#variavel user recebe o email</span>
+        if user and bcrypt.check_password_hash(user.password, formlogin.password.data): <span style="color: #84b6f4;"># se o email e a pass encriptada for igual á palavra passe que recebe então</span>
+            login_user(user) <span style="color: #84b6f4;"># faz o login do utilizador</span>
+            return redirect(url_for("userpage", user=user.name)) <span style="color: #84b6f4;"># redireciona para a página de utilizador</span>
+    return render_template("homepage.html", form=formlogin)
+</pre>
+<h3>Logout</h3>
+<pre>
+    @app.route("/logout")
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for("homepage"))
+</pre>
