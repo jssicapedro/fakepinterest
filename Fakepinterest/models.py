@@ -16,6 +16,6 @@ class User(database.Model, UserMixin):
 
 class Post(database.Model):
     id = database.Column(database.Integer, primary_key=True)
-    image = database.Column(database.String, default="default.png")
+    image = database.Column(database.String, default="default.jpg")
     date_create = database.Column(database.DateTime, nullable=False, default=datetime.utcnow())
     id_user = database.Column(database.Integer, database.ForeignKey('user.id'), nullable=False)

@@ -11,7 +11,7 @@ def homepage():
         user = User.query.filter_by(email=formlogin.email.data).first()
         if user and bcrypt.check_password_hash(user.password, formlogin.password.data):
             login_user(user)
-            return redirect(url_for("userpage", user=user.name))
+            return redirect(url_for("userpage", id_user=user.id))
     return render_template("homepage.html", form=formlogin)
 
 @app.route("/singup", methods=["GET", "POST"])
@@ -27,13 +27,17 @@ def singup():
         database.session.add(user)
         database.session.commit()
         login_user(user, remember=True)
-        return redirect(url_for("userpage", user=user.name))
+        return redirect(url_for("userpage", id_user=user.id))
     return render_template("singup.html", form=form_SingUp)
 
-@app.route("/user/<user>")
+@app.route("/user/<id_user>")
 @login_required
-def userpage(user):
-    return render_template("user/user.html", user=user)
+def userpage(id_user):
+    if int(id_user) == int(current_user.id):
+        return render_template("user/user.html", user=current_user)
+    else:
+        user = User.query.get(int(id_user))
+        return render_template("user/user.html", user=user)
 
 @app.route("/logout")
 @login_required

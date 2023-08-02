@@ -3,6 +3,10 @@
 {% block title %}Perfil {{ user }} {% endblock %}
 
 {% block main %}
-    <h1>Olá {{ user }}</h1>
+    <h1>Olá {{ user.name }}</h1>
     <a href="{{ url_for('logout') }}">Logout</a>
+    <img src="{{ url_for('static', filename='img_posts/default.jpg') }}">
+    {% for photo in user.photos %}
+
+    {% endfor %}
 {% endblock %}

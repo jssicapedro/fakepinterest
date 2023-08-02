@@ -213,3 +213,68 @@ A página criar conta é parecida com a página de login, tem de se informar que
         logout_user()
         return redirect(url_for("homepage"))
 </pre>
+
+<h3>Atualizar o perfil de utilizador</h3>
+Para sabermos quando estamos no nosso perfil ou no perfil de outra pessoa é necessário comparar o user que vemos e o user que está logado
+para isso é necessário fazer alguma alterações ao código que ja temos.
+
+<pre>
+    <span style="color: gray;">from flask import render_template, url_for, redirect
+    from Fakepinterest import app, database, bcrypt
+    from Fakepinterest.models import User, Post
+    from Fakepinterest.forms import FormLogin, FormSingUp
+    from flask_login import login_required, login_user, logout_user,</span> current_user
+    
+    <span style="color: gray;">@app.route("/", methods=["GET", "POST"])
+    def homepage():
+        formlogin = FormLogin()
+        if formlogin.validate_on_submit():
+            user = User.query.filter_by(email=formlogin.email.data).first()
+            if user and bcrypt.check_password_hash(user.password, formlogin.password.data):
+                login_user(user)
+                return redirect(url_for("userpage", </span>id_user=user.id))
+        <span style="color: gray;">return render_template("homepage.html", form=formlogin)
+    
+    @app.route("/singup", methods=["GET", "POST"])
+    def singup():
+        form_SingUp = FormSingUp()
+        if form_SingUp.validate_on_submit():
+            password = bcrypt.generate_password_hash(form_SingUp.password.data)
+            user = User(
+                name=form_SingUp.name.data,
+                email=form_SingUp.email.data,
+                password=password
+            )
+            database.session.add(user)
+            database.session.commit()
+            login_user(user, remember=True)
+            return redirect(url_for("userpage",</span> id_user=user.id))
+        <span style="color: gray;">return render_template("singup.html", form=form_SingUp)
+    
+    @app.route("/user/<id_user>")
+    @login_required
+    def userpage(id_user):</span>
+        if int(id_user) == int(current_user.id): <span style="color: #84b6f4;"> # se o id do utilizador for igual ao current user (user logado), então</span>
+            return render_template("user/user.html", user=current_user) <span style="color: #84b6f4;"> # retorna a página do utilizador logado</span>
+        else: <span style="color: #84b6f4;"> # senão </span>
+            user = User.query.get(int(id_user)) <span style="color: #84b6f4;"> # a variavel user recebe o id do url </span>
+            return render_template("user/user.html", user=user) <span style="color: #84b6f4;"> # retorna a página do utilizador que procuramos </span>
+    
+    <span style="color: gray;">@app.route("/logout")
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for("homepage"))</span>
+</pre>
+Com este código é possivel agora fazer alterações na página de utilizador de modo que, se for o current user na página de utilizador possam aparecer botões de edição de perfil e criação de posts.
+
+<h3> Gestão de Imagens </h3>
+Para a gestão de imagens é necessário fazer uma alteração no ficheiro <b>init</b>. Essa nova alteração fará com que sempre que haja um novo upload de imagem, esta será enviada para o diretório static/img_post. 
+<pre>
+    ...
+    <span style="color: gray;">app = Flask(__name__, static_folder="static")
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///comunidade.bd"
+    app.config["SECRET_KEY"] = "91079e75c7a25cd8672a"</span>
+    app.config["UPLOAD_FOLDER"] = "static/img_posts"
+</pre>
+<h4>Postar Imagem</h4>
