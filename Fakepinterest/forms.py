@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from Fakepinterest.models import User
 
@@ -19,3 +19,7 @@ class FormSingUp(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user:
             return ValidationError("This email already exist")
+        
+class FormPhoto(FlaskForm):
+    photo = FileField('photo', validators=[DataRequired()])
+    btn = SubmitField("Submit")

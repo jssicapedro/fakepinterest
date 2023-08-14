@@ -1,8 +1,10 @@
 from flask import render_template, url_for, redirect
 from Fakepinterest import app, database, bcrypt
 from Fakepinterest.models import User, Post
-from Fakepinterest.forms import FormLogin, FormSingUp
+from Fakepinterest.forms import FormLogin, FormSingUp, FormPhoto
 from flask_login import login_required, login_user, logout_user, current_user
+import os
+from werkzeug.utils import secure_filename
 
 @app.route("/", methods=["GET", "POST"])
 def homepage():
@@ -30,14 +32,27 @@ def singup():
         return redirect(url_for("userpage", id_user=user.id))
     return render_template("singup.html", form=form_SingUp)
 
-@app.route("/user/<id_user>")
+@app.route("/user/<id_user>", methods=["GET", "POST"])
 @login_required
 def userpage(id_user):
     if int(id_user) == int(current_user.id):
-        return render_template("user/user.html", user=current_user)
+        form_photo = FormPhoto()
+        if form_photo.validate_on_submit():
+            file = form_photo.photo.data
+            name_file = secure_filename(file.filename)
+
+            #guardar imagem na pasta
+            path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config["UPLOAD_FOLDER"], name_file)
+            file.save(path)
+
+            # registo de umagem na BD
+            image = Post(image=name_file, id_user=current_user.id)
+            database.session.add(image)
+            database.session.commit()
+        return render_template("user/user.html", user=current_user, form=form_photo)
     else:
         user = User.query.get(int(id_user))
-        return render_template("user/user.html", user=user)
+        return render_template("user/user.html", user=user, form=None)
 
 @app.route("/logout")
 @login_required
