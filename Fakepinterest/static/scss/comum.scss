@@ -51,6 +51,12 @@ form {
     }
     & input{
         margin-bottom: 10px;
+        padding: 5px 2px;
+        border: none;
+        border-bottom: 1px solid $accent-color;
+        &:focus{
+            outline: none;
+        }
     }
     & input[type="submit"]{
         margin: 0 auto;

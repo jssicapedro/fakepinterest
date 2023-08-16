@@ -21,6 +21,12 @@ Para que o site "rode" executar o código do ficheiro <a href="main.py">main.py<
         </ol>
 </ol>
 
+<h2>SCSS e CSS</h2>
+<p>Caso o CSS não esteja a corresponder ao SCSS, deve ser removido os ficheiros CSS e executar:</p>
+<pre>sass Fakepinterest/static/scss:Fakepinterest/static/css</pre>
+ou
+<pre>sass --watch Fakepinterest/static/scss/comum.scss:Fakepinterest/static/css/comum.css</pre>
+
 <h2>Base de dados</h2>
 Instalar o Flask SQL Alchemy. Este é responsavel pela gestão de SQL que vai permitir a integração com o banco de dados.
 <pre>
@@ -36,7 +42,7 @@ Após a sua instalação, cria-se o banco de dados no ficheiro __init__.py da se
     from Fakepinterest import routes<br>
 </pre>
 
-A seguir deve ser criado o ficheiro da base de dados, neste caso foi create_danck.py
+A seguir deve ser criado o ficheiro da base de dados, neste caso foi create_bank.py
 <pre>
     from Fakepinterest import database, app<br>
     with app.app_context():<br>
@@ -51,6 +57,13 @@ defenir quais são no ficheiro <b>models.py</b>.</p>
     from Fakepinterest.models import User, Post
 </code>
 <p>Agora sim, ao abrir o ficheiro comunidade.bd em qualquer leitor de ficheiros de base de dados vais ver que já tens as tabelas criadas</p>
+<hr>
+<h3>Resetar BD</h3>
+<p>De modo a resetar toda a base de dados deves:</p>
+<ol>
+    <li>Apagar o ficheiro comunidade.bd (Fakepinterest/instance/comunidade.bd)</li>
+    <li>Executar o ficheiro create_bank.py (Fakepinterest/create_bank.py)</li>
+</ol>
 
 <h2>Sistema de Login</h2>
 <p>Usa-se a ferramenta Flask Login que faz o gerênciamento de login para nós. Para isso funcionar
