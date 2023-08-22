@@ -11,8 +11,10 @@
             {{ form.photo() }}
             {{ form.btn() }}
         </form>
+        
+        <a href="{{ url_for('logout') }}">Logout</a>
     {% endif %}
-    <a href="{{ url_for('logout') }}">Logout</a>
+    
     {% for photo in user.photos %}
         <img src="{{ url_for('static', filename='img_posts/{}'.format(photo.image)) }}">
     {% endfor %}

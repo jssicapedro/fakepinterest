@@ -4,6 +4,7 @@ from Fakepinterest.models import User, Post
 from Fakepinterest.forms import FormLogin, FormSingUp, FormPhoto
 from flask_login import login_required, login_user, logout_user, current_user
 import os
+import secrets
 from werkzeug.utils import secure_filename
 
 @app.route("/", methods=["GET", "POST"])
@@ -39,13 +40,15 @@ def userpage(id_user):
         form_photo = FormPhoto()
         if form_photo.validate_on_submit():
             file = form_photo.photo.data
-            name_file = secure_filename(file.filename)
+            extension = os.path.splitext(file.filename)[1]  # Obtém a extensão do arquivo
+            random_name = secrets.token_hex(16) + extension  # Gera um nome aleatório
+            name_file = secure_filename(random_name)
 
-            #guardar imagem na pasta
+            # guardar imagem na pasta
             path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config["UPLOAD_FOLDER"], name_file)
             file.save(path)
 
-            # registo de umagem na BD
+            # registo de imagem na BD
             image = Post(image=name_file, id_user=current_user.id)
             database.session.add(image)
             database.session.commit()
@@ -59,3 +62,7 @@ def userpage(id_user):
 def logout():
     logout_user()
     return redirect(url_for("homepage"))
+
+@app.route("/feed")
+def feed():
+    return render_template("feed.html")
