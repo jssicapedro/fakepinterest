@@ -1,5 +1,10 @@
 {% extends "partials/layout.html" %}
 
 {% block main %}
-
+    {% include "partials/navbar.html" %}
+    <div class="feed">
+        {% for photo in photos %}
+            <img src="{{ url_for('static', filename='img_posts/{}'.format(photo.image)) }}">
+        {% endfor %}
+    </div>
 {% endblock %}

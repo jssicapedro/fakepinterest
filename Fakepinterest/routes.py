@@ -64,5 +64,7 @@ def logout():
     return redirect(url_for("homepage"))
 
 @app.route("/feed")
+@login_required
 def feed():
-    return render_template("feed.html")
+    photos = Post.query.order_by(Post.date_create).all() # para mostrar apenas x fotos    ....all()[:100]
+    return render_template("feed.html", photos=photos)

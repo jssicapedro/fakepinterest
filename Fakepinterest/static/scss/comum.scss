@@ -36,6 +36,12 @@ main {
     margin: 0 auto;
 }
 
+header{
+    & li a{
+        text-decoration: none;
+    }
+}
+
 h1 {
     text-align: center;
 }
